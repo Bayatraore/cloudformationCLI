@@ -4,5 +4,5 @@ Resources:
   S3Bucket:
     Type: AWS::S3::Bucket    
     Properties:
-      BucketName: vamsi-bucket-32472      
+      BucketName: che-nastravels.net-27-05-22-demo      
       AccessControl: PublicRead

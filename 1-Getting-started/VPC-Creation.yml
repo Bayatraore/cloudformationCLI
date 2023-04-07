@@ -1,0 +1,161 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFormation template for CPV set-up     
+Resources:
+  myVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags: 
+        - Key: Name 
+          Value: myDemo 
+
+  mySubnetPub1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref myVPC
+      CidrBlock: 10.0.5.0/24
+      AvailabilityZone: "us-east-1a"
+      Tags: 
+        - Key: Name 
+          Value: mySubnetPub1
+
+  mySubnetPub2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref myVPC
+      CidrBlock: 10.0.10.0/24
+      AvailabilityZone: "us-east-1b"
+      Tags: 
+        - Key: Name 
+          Value: mySubnetPub2
+    
+  mySubnetPriv1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref myVPC
+      CidrBlock: 10.0.15.0/24
+      AvailabilityZone: "us-east-1a"
+      Tags: 
+        - Key: Name 
+          Value: mySubnetPriv1
+
+  mySubnetPriv2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref myVPC
+      CidrBlock: 10.0.20.0/24
+      AvailabilityZone: "us-east-1b"
+      Tags: 
+        - Key: Name 
+          Value: mySubnetPriv2
+
+  myRouteTablePub:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref myVPC
+      Tags: 
+        - Key: Name 
+          Value: myRouteTablePub
+    
+  myRouteTablePriv:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref myVPC
+      Tags: 
+        - Key: Name 
+          Value: myRouteTablepriv
+      
+  myInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags: 
+        - Key: Name 
+          Value: myInternetGateway
+  myGatewayAttachment:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref myVPC
+      InternetGatewayId: !Ref myInternetGateway
+
+  myPublicRoute:
+    Type: "AWS::EC2::Route"
+    DependsOn: myGatewayAttachment
+    Properties:
+      RouteTableId: !Ref myRouteTablePub
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref myInternetGateway
+
+  NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NATGatewayEIP.AllocationId
+      SubnetId: !Ref mySubnetPub1
+      Tags:
+        - Key: Name
+          Value: NATGateway 
+  NATGatewayEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: myVPC
+  RouteNATGateway:
+    DependsOn: NATGateway
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref myRouteTablePriv
+      DestinationCidrBlock: '0.0.0.0/0'
+      NatGatewayId: !Ref NATGateway
+
+  mySubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref mySubnetPub1
+      RouteTableId: !Ref myRouteTablePub
+  mySubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref mySubnetPub2
+      RouteTableId: !Ref myRouteTablePub
+
+  mySubnetRouteTableAssociation3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref mySubnetPriv1
+      RouteTableId: !Ref myRouteTablePriv
+  mySubnetRouteTableAssociation4:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref mySubnetPriv2
+      RouteTableId: !Ref myRouteTablePriv
+
+  myNetworkAcl:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref myVPC
+      Tags:
+      - Key: Name
+        Value: myNetworkAcl
+  mySubnetNetworkAclAssociation1:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref mySubnetPub1
+      NetworkAclId: !Ref myNetworkAcl
+  mySubnetNetworkAclAssociation2:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref mySubnetPub2
+      NetworkAclId: !Ref myNetworkAcl
+  mySubnetNetworkAclAssociation3:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref mySubnetPriv1
+      NetworkAclId: !Ref myNetworkAcl
+  mySubnetNetworkAclAssociation4:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref mySubnetPriv2
+      NetworkAclId: !Ref myNetworkAcl
+
+  
+  
+  

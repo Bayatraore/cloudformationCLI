@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFormation template for s3 bucket     
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket    
+    Properties:
+      BucketName: cearcer-bucket-32472
+
+Outputs:
+  BucketName:
+    Description: name of bucket
+    Value: !Ref S3Bucket
+    Export:
+      Name: NetflixS3Bucket
+  BucketARN:
+    Description: arn of bucket
+    Value: !GetAtt
+      - S3Bucket
+      - Arn
+    Export:
+      Name: NetflixS3BucketArn
+      

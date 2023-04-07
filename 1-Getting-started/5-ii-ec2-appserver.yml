@@ -1,11 +1,10 @@
-
 AWSTemplateFormatVersion: "2010-09-09"
-Description: A sample template
+Description: Ec2 sample Appserver
 Resources:
   MyEC2Instance:
     Type: "AWS::EC2::Instance"
     Properties: 
-      ImageId: "ami-0022f774911c1d690"
+      ImageId: "ami-02f3f602d23f1659d"
       InstanceType: t2.micro      
       BlockDeviceMappings:
         -
@@ -13,5 +12,5 @@ Resources:
           Ebs:
             VolumeType: gp2            
             DeleteOnTermination: true
-            VolumeSize: 8
+            VolumeSize: 10
             

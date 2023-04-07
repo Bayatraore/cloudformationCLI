@@ -1,0 +1,38 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: EC2 creation with output
+Resources:
+  MyEC2Instance: 
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: "ami-00c39f71452c08778"
+      InstanceType: t2.micro
+      KeyName: "CHE-INSPECTOR-SERVER"
+      BlockDeviceMappings: 
+      - DeviceName: "/dev/xvda"
+        Ebs: 
+          VolumeType: "io1"
+          Iops: "200"
+          DeleteOnTermination: "true"
+          VolumeSize: "20"
+
+Outputs:
+  BackupEc2PrivIp:
+    Description: Output Ec2 Priv Ip
+    Value: !GetAtt
+      - MyEC2Instance
+      - PrivateIp
+    Export: 
+      Name: MyEc2IdPrivIp
+  BackupEc2PubIp:
+    Description: Output Ec2 Id Pub
+    Value: !GetAtt
+      - MyEC2Instance
+      - PublicIp
+    Export: 
+      Name: MyEc2IdPubIp
+  InstanceID:
+    Description: The Instance ID
+    Value: !Ref MyEC2Instance
+
+ 
