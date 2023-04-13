@@ -5,8 +5,8 @@ Resources:
   MyEC2Instance:
     Type: "AWS::EC2::Instance"
     Properties: 
-      ImageId: "ami-0022f774911c1d690"
-      InstanceType: t2.micro      
+      ImageId: "ami-06e46074ae430fba6"
+      InstanceType: t2.small      
       BlockDeviceMappings:
         -
           DeviceName: /dev/xvda
@@ -14,4 +14,3 @@ Resources:
             VolumeType: gp2            
             DeleteOnTermination: true
             VolumeSize: 8
-            
